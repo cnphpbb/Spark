@@ -1,0 +1,10 @@
+/releases
+/built
+/tools
+/logs
+/.idea
+/config.json
+dist/
+node_modules/
+#macosx
+.DS_Store
