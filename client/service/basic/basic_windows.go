@@ -9,16 +9,22 @@ import (
 )
 
 func init() {
-	privilege()
+	_ = privilege()
 }
 
 func privilege() error {
 	user32 := syscall.MustLoadDLL("user32")
-	defer user32.Release()
+	defer func(user32 *syscall.DLL) {
+		_ = user32.Release()
+	}(user32)
 	kernel32 := syscall.MustLoadDLL("kernel32")
-	defer user32.Release()
+	defer func(user32 *syscall.DLL) {
+		_ = user32.Release()
+	}(user32)
 	advapi32 := syscall.MustLoadDLL("advapi32")
-	defer advapi32.Release()
+	defer func(advapi32 *syscall.DLL) {
+		_ = advapi32.Release()
+	}(advapi32)
 
 	GetLastError := kernel32.MustFindProc("GetLastError")
 	GetCurrentProcess := kernel32.MustFindProc("GetCurrentProcess")
@@ -86,7 +92,7 @@ func privilege() error {
 func Lock() error {
 	dll := syscall.MustLoadDLL(`user32`)
 	_, _, err := dll.MustFindProc(`LockWorkStation`).Call()
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}
@@ -97,7 +103,7 @@ func Logoff() error {
 	const EWX_LOGOFF = 0x00000000
 	dll := syscall.MustLoadDLL(`user32`)
 	_, _, err := dll.MustFindProc(`ExitWindowsEx`).Call(EWX_LOGOFF, 0x0)
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}
@@ -108,7 +114,7 @@ func Hibernate() error {
 	const HIBERNATE = 0x00000001
 	dll := syscall.MustLoadDLL(`powrprof`)
 	_, _, err := dll.MustFindProc(`SetSuspendState`).Call(HIBERNATE, 0x0, 0x1)
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}
@@ -119,7 +125,7 @@ func Suspend() error {
 	const SUSPEND = 0x00000000
 	dll := syscall.MustLoadDLL(`powrprof`)
 	_, _, err := dll.MustFindProc(`SetSuspendState`).Call(SUSPEND, 0x0, 0x1)
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}
@@ -131,7 +137,7 @@ func Restart() error {
 	const EWX_FORCE = 0x00000004
 	dll := syscall.MustLoadDLL(`user32`)
 	_, _, err := dll.MustFindProc(`ExitWindowsEx`).Call(EWX_REBOOT|EWX_FORCE, 0x0)
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}
@@ -143,7 +149,7 @@ func Shutdown() error {
 	const EWX_FORCE = 0x00000004
 	dll := syscall.MustLoadDLL(`user32`)
 	_, _, err := dll.MustFindProc(`ExitWindowsEx`).Call(EWX_SHUTDOWN|EWX_FORCE, 0x0)
-	dll.Release()
+	_ = dll.Release()
 	if err == syscall.Errno(0) {
 		return nil
 	}

@@ -43,8 +43,10 @@ func (wsConn *Conn) SendData(data []byte) error {
 	if WSConn == nil {
 		return errors.New(`${i18n|COMMON.DISCONNECTED}`)
 	}
-	wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
-	defer wsConn.SetWriteDeadline(time.Time{})
+	_ = wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
+	defer func(wsConn *Conn, t time.Time) {
+		_ = wsConn.SetWriteDeadline(t)
+	}(wsConn, time.Time{})
 	return wsConn.WriteMessage(ws.BinaryMessage, data)
 }
 
@@ -69,8 +71,10 @@ func (wsConn *Conn) SendPack(pack any) error {
 	if WSConn == nil {
 		return errors.New(`${i18n|COMMON.DISCONNECTED}`)
 	}
-	wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
-	defer wsConn.SetWriteDeadline(time.Time{})
+	_ = wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
+	defer func(wsConn *Conn, t time.Time) {
+		_ = wsConn.SetWriteDeadline(t)
+	}(wsConn, time.Time{})
 	return wsConn.WriteMessage(ws.BinaryMessage, data)
 }
 
@@ -88,8 +92,10 @@ func (wsConn *Conn) SendRawData(event, data []byte, service byte, op byte) error
 	binary.BigEndian.PutUint16(buffer[22:24], uint16(len(data)))
 	buffer = append(buffer, data...)
 
-	wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
-	defer wsConn.SetWriteDeadline(time.Time{})
+	_ = wsConn.SetWriteDeadline(utils.Now.Add(5 * time.Second))
+	defer func(wsConn *Conn, t time.Time) {
+		_ = wsConn.SetWriteDeadline(t)
+	}(wsConn, time.Time{})
 	return wsConn.WriteMessage(ws.BinaryMessage, buffer)
 }
 

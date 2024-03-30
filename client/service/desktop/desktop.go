@@ -216,7 +216,7 @@ func getImageBlock(img *image.RGBA, rect image.Rectangle, compress int) []byte {
 			Rect:   image.Rect(0, 0, width, height),
 		}
 		writer := &bytes.Buffer{}
-		jpeg.Encode(writer, subImg, &jpeg.Options{Quality: imageQuality})
+		_ = jpeg.Encode(writer, subImg, &jpeg.Options{Quality: imageQuality})
 		return writer.Bytes()
 	}
 	return nil
@@ -316,7 +316,7 @@ func InitDesktop(pack modules.Packet) error {
 				close(desktop.channel)
 				data, _ := utils.JSON.Marshal(modules.Packet{Act: `DESKTOP_QUIT`, Msg: `${i18n|DESKTOP.NO_DISPLAY_FOUND}`})
 				data = utils.XOR(data, common.WSConn.GetSecret())
-				common.WSConn.SendRawData(desktop.rawEvent, data, 20, 03)
+				_ = common.WSConn.SendRawData(desktop.rawEvent, data, 20, 03)
 				return errors.New(`${i18n|DESKTOP.NO_DISPLAY_FOUND}`)
 			}
 		}

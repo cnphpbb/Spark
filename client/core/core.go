@@ -87,13 +87,13 @@ func reportWS(wsConn *common.Conn) error {
 	}
 	pack := modules.CommonPack{Act: `DEVICE_UP`, Data: *device}
 	err = wsConn.SendPack(pack)
-	common.WSConn.SetWriteDeadline(time.Time{})
+	_ = common.WSConn.SetWriteDeadline(time.Time{})
 	if err != nil {
 		return err
 	}
-	common.WSConn.SetReadDeadline(utils.Now.Add(5 * time.Second))
+	_ = common.WSConn.SetReadDeadline(utils.Now.Add(5 * time.Second))
 	_, data, err := common.WSConn.ReadMessage()
-	common.WSConn.SetReadDeadline(time.Time{})
+	_ = common.WSConn.SetReadDeadline(time.Time{})
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func checkUpdate(wsConn *common.Conn) error {
 				return err
 			}
 			stop = true
-			wsConn.Close()
+			_ = wsConn.Close()
 			os.Exit(0)
 		}
 		return nil
@@ -183,7 +183,7 @@ func handleWS(wsConn *common.Conn) error {
 			continue
 		}
 		pack := modules.Packet{}
-		utils.JSON.Unmarshal(data, &pack)
+		_ = utils.JSON.Unmarshal(data, &pack)
 		if err != nil {
 			golog.Error(err)
 			errCount++
@@ -198,13 +198,13 @@ func handleWS(wsConn *common.Conn) error {
 		}
 		go handleAct(pack, wsConn)
 	}
-	wsConn.Close()
+	_ = wsConn.Close()
 	return nil
 }
 
 func handleAct(pack modules.Packet, wsConn *common.Conn) {
 	if act, ok := handlers[pack.Act]; !ok {
-		wsConn.SendCallback(modules.Packet{Code: 1, Msg: `${i18n|COMMON.OPERATION_NOT_SUPPORTED}`}, pack)
+		_ = wsConn.SendCallback(modules.Packet{Code: 1, Msg: `${i18n|COMMON.OPERATION_NOT_SUPPORTED}`}, pack)
 	} else {
 		defer func() {
 			if r := recover(); r != nil {

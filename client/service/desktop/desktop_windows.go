@@ -88,7 +88,7 @@ func (s *ScreenDXGI) Init(displayIndex uint, rect image.Rectangle) error {
 func (s *ScreenDXGI) Capture() (*image.RGBA, error) {
 	img := image.NewRGBA(image.Rect(0, 0, s.rect.Dx(), s.rect.Dy()))
 	err := s.ddup.GetImage(img, 100)
-	if err == outputduplication.ErrNoImageYet {
+	if errors.Is(err, outputduplication.ErrNoImageYet) {
 		return nil, errNoImage
 	}
 	return img, err

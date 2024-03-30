@@ -65,7 +65,7 @@ func update() {
 		if err != nil {
 			return
 		}
-		os.WriteFile(destPath, thisFile, 0755)
+		_ = os.WriteFile(destPath, thisFile, 0755)
 		cmd := exec.Command(destPath, `--clean`)
 		if cmd.Start() == nil {
 			os.Exit(0)
@@ -74,7 +74,7 @@ func update() {
 	}
 	if len(os.Args) > 1 && os.Args[1] == `--clean` {
 		<-time.After(3 * time.Second)
-		os.Remove(selfPath + `.tmp`)
+		_ = os.Remove(selfPath + `.tmp`)
 	}
 }
 
