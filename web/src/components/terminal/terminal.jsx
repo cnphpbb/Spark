@@ -1,11 +1,11 @@
 import React, {createRef, useCallback, useState} from "react";
 import {Button, Dropdown, Menu, message, Space} from "antd";
-import {Terminal} from "xterm";
-import {WebLinksAddon} from "xterm-addon-web-links";
-import {FitAddon} from "xterm-addon-fit";
+import {Terminal} from "@xterm/xterm";
+import {WebLinksAddon} from "@xterm/addon-web-links";
+import {FitAddon} from "@xterm/addon-fit";
 import debounce from 'lodash/debounce';
 import wcwidth from 'wcwidth';
-import "xterm/css/xterm.css";
+import "@xterm/xterm/css/xterm.css";
 import i18n from "../../locale/locale";
 import {
 	decrypt, encrypt, genRandHex, getBaseURL,
@@ -49,13 +49,15 @@ function TerminalModal(props) {
 					fontFamily: "Hack, monospace",
 					fontSize: 16,
 					logLevel: "off",
+					cols: 140,
 				});
 				termEv = initialize(null);
-				term.loadAddon(fit);
 				term.open(termRef.current);
-				fit.fit();
-				term.clear();
+				term.loadAddon(fit);
 				term.loadAddon(webLinks);
+				//fit.fit();
+				term.clear();
+				//
 
 				window.onresize = onResize;
 				ticker = setInterval(() => {
@@ -517,7 +519,8 @@ function TerminalModal(props) {
 	function doResize() {
 		let height = document.body.clientHeight;
 		let rows = Math.floor(height / 42);
-		let cols = term?.cols;
+		//let cols = term?.cols;
+		let cols = 140;
 		fit?.fit?.();
 		term?.resize?.(cols, rows);
 		term?.scrollToBottom?.();
@@ -534,7 +537,7 @@ function TerminalModal(props) {
 	}
 	function onResize() {
 		if (typeof doResize === 'function') {
-			debounce(doResize, 70);
+			debounce(doResize, 50);
 		}
 	}
 
@@ -562,8 +565,8 @@ function TerminalModal(props) {
 			afterClose={afterClose}
 			destroyOnClose={true}
 			footer={null}
-			height={250}
-			width={900}
+			height={300}
+			width={1500}
 		>
 			<ExtKeyboard
 				ref={extKeyRef}

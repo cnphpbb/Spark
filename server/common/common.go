@@ -91,7 +91,8 @@ func GetRealIP(ctx *gin.Context) string {
 }
 
 func GetRemoteAddr(ctx *gin.Context) string {
-	if remote, ok := ctx.RemoteIP(); ok {
+	remote := net.ParseIP(ctx.RemoteIP())
+	if len(remote.String()) > 0 {
 		if remote.IsLoopback() {
 			forwarded := ctx.GetHeader(`X-Forwarded-For`)
 			if len(forwarded) > 0 {
@@ -111,7 +112,7 @@ func GetRemoteAddr(ctx *gin.Context) string {
 		}
 	}
 
-	remote := net.ParseIP(ctx.Request.RemoteAddr)
+	remote = net.ParseIP(ctx.Request.RemoteAddr)
 	if remote != nil {
 		if remote.IsLoopback() {
 			forwarded := ctx.GetHeader(`X-Forwarded-For`)

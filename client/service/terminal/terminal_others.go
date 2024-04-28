@@ -150,7 +150,7 @@ func ResizeTerminal(pack modules.Packet) {
 			return
 		}
 	}
-	pty.Setsize(session.pty, &pty.Winsize{
+	_ = pty.Setsize(session.pty, &pty.Winsize{
 		Cols: cols,
 		Rows: rows,
 	})

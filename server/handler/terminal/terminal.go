@@ -7,6 +7,7 @@ import (
 	"Spark/utils"
 	"Spark/utils/melody"
 	"encoding/hex"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"reflect"
@@ -104,6 +105,23 @@ func terminalEventWrapper(terminal *terminal) common.EventCallback {
 					`deviceConn`: terminal.deviceConn,
 				})
 			}
+		//case `TERMINAL_RESIZE`:
+		//	if pack.Data == nil {
+		//		return
+		//	}
+		//	fmt.Println(pack.Data)
+		//	if cols, ok := pack.Data[`cols`]; ok {
+		//		if rows, ok := pack.Data[`rows`]; ok {
+		//			common.SendPack(modules.Packet{Act: `TERMINAL_RESIZE`, Data: gin.H{
+		//				`cols`:     cols,
+		//				`rows`:     rows,
+		//				`terminal`: terminal.uuid,
+		//			}, Event: terminal.uuid}, terminal.deviceConn)
+		//			common.Info(terminal.session, `TERMINAL_RESIZE`, ``, ``, map[string]any{
+		//				`deviceConn`: terminal.deviceConn,
+		//			})
+		//		}
+		//	}
 		case `TERMINAL_QUIT`:
 			msg := `${i18n|TERMINAL.SESSION_CLOSED}`
 			if len(pack.Msg) > 0 {
@@ -125,6 +143,7 @@ func terminalEventWrapper(terminal *terminal) common.EventCallback {
 				}}, terminal.session)
 			}
 		}
+
 	}
 }
 
@@ -159,7 +178,14 @@ func onTerminalConnect(session *melody.Session) {
 	common.SendPack(modules.Packet{Act: `TERMINAL_INIT`, Data: gin.H{
 		`terminal`: uuid,
 	}, Event: uuid}, deviceConn)
+	common.SendPack(modules.Packet{Act: `TERMINAL_RESIZE`, Data: gin.H{
+		`cols`:     120,
+		`terminal`: uuid,
+	}, Event: uuid}, deviceConn)
 	common.Info(terminal.session, `TERMINAL_CONN`, `success`, ``, map[string]any{
+		`deviceConn`: terminal.deviceConn,
+	})
+	common.Info(terminal.session, `TERMINAL_RESIZE`, `success`, ``, map[string]any{
 		`deviceConn`: terminal.deviceConn,
 	})
 }
@@ -222,6 +248,7 @@ func onTerminalMessage(session *melody.Session, data []byte) {
 		if pack.Data == nil {
 			return
 		}
+		fmt.Println(pack.Data)
 		if cols, ok := pack.Data[`cols`]; ok {
 			if rows, ok := pack.Data[`rows`]; ok {
 				common.SendPack(modules.Packet{Act: `TERMINAL_RESIZE`, Data: gin.H{
@@ -229,6 +256,9 @@ func onTerminalMessage(session *melody.Session, data []byte) {
 					`rows`:     rows,
 					`terminal`: terminal.uuid,
 				}, Event: terminal.uuid}, terminal.deviceConn)
+				common.Info(terminal.session, `TERMINAL_RESIZE`, ``, ``, map[string]any{
+					`deviceConn`: terminal.deviceConn,
+				})
 			}
 		}
 		return

@@ -144,7 +144,7 @@ func inputTerminal(pack modules.Packet, wsConn *common.Conn) {
 }
 
 func resizeTerminal(pack modules.Packet, wsConn *common.Conn) {
-	_ = terminal.ResizeTerminal(pack)
+	terminal.ResizeTerminal(pack)
 }
 
 func pingTerminal(pack modules.Packet, wsConn *common.Conn) {

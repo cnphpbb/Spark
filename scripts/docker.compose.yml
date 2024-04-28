@@ -1,0 +1,23 @@
+##
+
+services:
+
+  node:
+    image: node:20.12-alpine
+    container_name: "build-spark-web-1"
+    restart: unless-stopped
+    tty: true
+    command: sh
+    volumes:
+      - /Users/geng/mydata/github.com/cnphpbb/Spark/:/app/
+    working_dir: /app
+
+  go:
+    image: golang:1.22.1-bookworm
+    container_name: "build-spark-go-1"
+    restart: unless-stopped
+    tty: true
+    command: bash
+    volumes:
+      - /Users/geng/mydata/github.com/cnphpbb/Spark/:/app/
+    working_dir: /app

@@ -5,8 +5,6 @@ import {catchBlobReq, formatSize, request, tsToTime, waitTime} from "../utils/ut
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import i18n from "../locale/locale";
 
-// DO NOT EDIT OR DELETE THIS COPYRIGHT MESSAGE.
-console.log("%c By XZB %c https://github.com/XZB-1248/Spark", 'font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:64px;color:#00bbee;-webkit-text-fill-color:#00bbee;-webkit-text-stroke:1px#00bbee;', 'font-size:12px;');
 
 let ComponentMap = {
 	Generate: null,
