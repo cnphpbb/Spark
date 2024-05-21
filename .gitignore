@@ -8,3 +8,6 @@ dist/
 node_modules/
 #macosx
 .DS_Store
+/server/embed/
+/web/.idea/
+/web/package-lock.json
